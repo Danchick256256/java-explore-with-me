@@ -9,6 +9,7 @@ import ru.practicum.statistics.dto.StatisticMessage;
 import ru.practicum.statistics.model.Hit;
 import ru.practicum.statistics.utility.Constants;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class StatisticsService {
                     Integer hitCount = unique ? repository.getCountOfUniqueIpByUri(hit.getUri()) : repository.getCountIpByUri(hit.getUri());
                     return new StatisticMessage(hit.getApp(), hit.getUri(), hitCount);
                 })
+                .sorted(Comparator.comparing(StatisticMessage::getHits, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
