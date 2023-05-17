@@ -25,7 +25,7 @@ public class StatisticsService {
         List<Hit> hits;
         if (uris.size() == 0) hits = repository.findAllByTimestampBetween(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER));
         else hits = repository.findAllByTimestampBetweenAndUriIn(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER), uris);
-        List<StatisticMessage> statisticMessages = hits.stream()
+        return hits.stream()
                 .collect(Collectors.groupingBy(Hit::getUri))
                 .values()
                 .stream()
@@ -35,12 +35,6 @@ public class StatisticsService {
                     return new StatisticMessage(hit.getApp(), hit.getUri(), hitCount);
                 })
                 .collect(Collectors.toList());
-
-        return statisticMessages;
-        /*return hits.stream().map(hit -> {
-            Integer hitCount = unique ? repository.getCountOfUniqueIpByUri(hit.getUri()) : repository.getCountIpByUri(hit.getUri());
-            return new StatisticMessage(hit.getApp(), hit.getUri(), hitCount);
-        }).collect(Collectors.toList());*/
     }
 
     public Hit addHit(HitPayload endpointHitPayload) {
