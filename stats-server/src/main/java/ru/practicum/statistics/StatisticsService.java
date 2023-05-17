@@ -23,8 +23,10 @@ public class StatisticsService {
 
     public List<StatisticMessage> getStatistic(String start, String end, List<String> uris, Boolean unique) {
         List<Hit> hits;
-        if (uris.size() == 0) hits = repository.findAllByTimestampBetween(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER));
-        else hits = repository.findAllByTimestampBetweenAndUriIn(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER), uris);
+        if (uris.size() == 0)
+            hits = repository.findAllByTimestampBetween(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER));
+        else
+            hits = repository.findAllByTimestampBetweenAndUriIn(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER), uris);
         return hits.stream()
                 .collect(Collectors.groupingBy(Hit::getUri))
                 .values()
