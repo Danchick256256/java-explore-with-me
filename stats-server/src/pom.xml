@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ewm-service</artifactId>
+    <artifactId>stats-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Explore With Me Service</name>
 
