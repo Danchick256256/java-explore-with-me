@@ -27,6 +27,7 @@ public class StatisticsService {
     @SneakyThrows
     public List<StatisticMessage> getStatistic(String start, String end, List<String> uris, Boolean unique) {
         if (parse(start, Constants.TIME_FORMATTER).isAfter(parse(end, Constants.TIME_FORMATTER))) throw new ValidationException("Start is after end");
+        if (parse(start, Constants.TIME_FORMATTER).equals(parse(end, Constants.TIME_FORMATTER))) throw new ValidationException("Start equals end");
         List<Hit> hits;
         if (uris.isEmpty())
             hits = repository.findAllByTimestampBetween(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER));
