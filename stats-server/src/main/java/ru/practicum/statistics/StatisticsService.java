@@ -1,6 +1,7 @@
 package ru.practicum.statistics;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.statistics.dao.StatisticRepository;
@@ -9,6 +10,7 @@ import ru.practicum.statistics.dto.StatisticMessage;
 import ru.practicum.statistics.model.Hit;
 import ru.practicum.statistics.utility.Constants;
 
+import javax.xml.bind.ValidationException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +24,11 @@ import static ru.practicum.statistics.mapper.EndPointHitMapper.toHit;
 public class StatisticsService {
     private final StatisticRepository repository;
 
+    @SneakyThrows
     public List<StatisticMessage> getStatistic(String start, String end, List<String> uris, Boolean unique) {
+        if (parse(start, Constants.TIME_FORMATTER).isAfter(parse(end, Constants.TIME_FORMATTER))) throw new ValidationException("Start is after end");
         List<Hit> hits;
-        if (uris.size() == 0)
+        if (uris.isEmpty())
             hits = repository.findAllByTimestampBetween(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER));
         else
             hits = repository.findAllByTimestampBetweenAndUriIn(parse(start, Constants.TIME_FORMATTER), parse(end, Constants.TIME_FORMATTER), uris);
