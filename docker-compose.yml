@@ -8,23 +8,51 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - db
+      - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
-      - POSTGRES_DB=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats-db
+      - POSTGRES_DB=stats-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - TZ=Europe/Moscow
 
-  db:
+  explore-server:
+    build: ./explore-server
+    image: explore-server
+    container_name: explore-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - explore-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-db:5432/explore-db
+      - POSTGRES_DB=explore-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=Europe/Moscow
+
+  explore-db:
+    image: postgres:13.7-alpine
+    container_name: explore-db
+    volumes:
+      - /var/lib/postgresql/data/
+    ports:
+      - "5430:5430"
+    environment:
+      - POSTGRES_DB=explore-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=Europe/Moscow
+
+  stats-db:
     image: postgres:13.7-alpine
     container_name: stats-db
     volumes:
       - /var/lib/postgresql/data/
     ports:
-      - "6541:5432"
+      - "5432:5432"
     environment:
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=stats-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - TZ=Europe/Moscow

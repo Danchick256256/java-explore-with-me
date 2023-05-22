@@ -1,0 +1,7 @@
+package ru.yandex.practicum.explore.exception;
+
+public class NotAllowedException extends RuntimeException {
+    public NotAllowedException(String message) {
+        super(message);
+    }
+}

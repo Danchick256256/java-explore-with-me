@@ -24,6 +24,7 @@
 
 	<modules>
 		<module>stats-server</module>
+		<module>explore-server</module>
 	</modules>
 
 	<build>
