@@ -4,7 +4,6 @@ import ru.yandex.practicum.explore.event.dto.EventFullDto;
 import ru.yandex.practicum.explore.event.dto.EventShortDto;
 import ru.yandex.practicum.explore.event.dto.UpdateEventUserRequest;
 import ru.yandex.practicum.explore.util.EventSort;
-import ru.yandex.practicum.explore.util.EventState;
 import ru.yandex.practicum.explore.event.dto.NewEventDto;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.util.StateAction;
