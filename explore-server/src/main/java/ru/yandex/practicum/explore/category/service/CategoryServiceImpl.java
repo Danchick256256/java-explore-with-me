@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.explore.exception.ConditionsNotMetException;
 import ru.yandex.practicum.explore.exception.NotFoundException;
 import ru.yandex.practicum.explore.category.repository.CategoryRepository;
 import ru.yandex.practicum.explore.category.dto.CategoryDto;

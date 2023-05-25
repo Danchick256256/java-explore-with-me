@@ -9,7 +9,6 @@ import ru.yandex.practicum.explore.event.dto.UpdateEventUserRequest;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.user.model.User;
 import ru.yandex.practicum.explore.user.util.UserDtoMapper;
-import ru.yandex.practicum.explore.util.EventState;
 import ru.yandex.practicum.explore.util.StateAction;
 
 import java.time.LocalDateTime;

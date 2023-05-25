@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 import ru.yandex.practicum.explore.event.model.Location;
-import ru.yandex.practicum.explore.util.EventState;
 import ru.yandex.practicum.explore.util.StateAction;
 
 import java.time.LocalDateTime;

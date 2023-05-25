@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-import org.springframework.lang.Nullable;
 import ru.yandex.practicum.explore.event.model.Location;
 import ru.yandex.practicum.explore.util.StateAction;
 

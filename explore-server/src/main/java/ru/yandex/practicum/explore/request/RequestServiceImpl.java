@@ -1,24 +1,19 @@
 package ru.yandex.practicum.explore.request;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.explore.event.dto.EventRequestStatusUpdateRequest;
-import ru.yandex.practicum.explore.exception.BadRequestException;
-import ru.yandex.practicum.explore.exception.ConditionsNotMetException;
-import ru.yandex.practicum.explore.exception.NotFoundException;
-import ru.yandex.practicum.explore.request.dto.ParticipationRequestDtoList;
-import ru.yandex.practicum.explore.user.model.User;
-import ru.yandex.practicum.explore.user.service.UserService;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.event.service.EventService;
-import ru.yandex.practicum.explore.request.repository.RequestRepository;
-import ru.yandex.practicum.explore.request.util.RequestMapper;
+import ru.yandex.practicum.explore.exception.NotFoundException;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
 import ru.yandex.practicum.explore.request.model.ParticipationRequest;
-import ru.yandex.practicum.explore.util.EventState;
+import ru.yandex.practicum.explore.request.repository.RequestRepository;
+import ru.yandex.practicum.explore.request.util.RequestMapper;
+import ru.yandex.practicum.explore.user.model.User;
+import ru.yandex.practicum.explore.user.service.UserService;
 import ru.yandex.practicum.explore.util.ParticipationStatus;
 import ru.yandex.practicum.explore.util.StateAction;
 
@@ -27,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.explore.request.util.RequestMapper.getNewRequest;
 import static ru.yandex.practicum.explore.request.util.RequestMapper.requestToDto;
-import static ru.yandex.practicum.explore.util.ParticipationStatus.*;
+import static ru.yandex.practicum.explore.util.ParticipationStatus.CONFIRMED;
 
 @Service
 @RequiredArgsConstructor

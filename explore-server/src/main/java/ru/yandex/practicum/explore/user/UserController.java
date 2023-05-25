@@ -10,7 +10,6 @@ import ru.yandex.practicum.explore.event.dto.*;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.request.RequestService;
 import ru.yandex.practicum.explore.util.OnCreate;
-import ru.yandex.practicum.explore.util.OnUpdate;
 import ru.yandex.practicum.explore.event.service.EventService;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
 
