@@ -1,6 +1,8 @@
 package ru.yandex.practicum.explore.category.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import static ru.yandex.practicum.explore.category.util.CategoryDtoMapper.newCat
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final EventSpecificationRepository eventRepository;
@@ -49,8 +52,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto update(CategoryDto body) {
-        Category category = findById(body.getId());
+    public CategoryDto update(Long categoryId, CategoryDto body) {
+        Category category = findById(categoryId);
         category.setName(body.getName());
         return categoryToDto(categoryRepository.save(category));
     }
@@ -59,9 +62,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteById(Long catId) {
         findById(catId);
-        if (eventRepository.findEventsByCategory_Id(catId).stream().findAny().isEmpty())
+        if (eventRepository.findEventsByCategory_Id(catId).stream().findAny().isEmpty()) {
             categoryRepository.deleteById(catId);
-        else
-            throw new ConditionsNotMetException("For the requested operation the conditions are not met.");
+        } else
+            throw new DataIntegrityViolationException("For the requested operation the conditions are not met.");
     }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import ru.yandex.practicum.explore.category.model.Category;
 import ru.yandex.practicum.explore.user.model.User;
 import ru.yandex.practicum.explore.util.EventState;
+import ru.yandex.practicum.explore.util.StateAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -40,7 +41,6 @@ public class Event {
     private LocalDateTime createdOn;
 
     @Column(name = "event_description", nullable = false)
-    @Size(min = 20, max = 7000)
     private String description;
 
     @Column(name = "event_date")
@@ -68,7 +68,7 @@ public class Event {
 
     @Column(name = "event_state", nullable = false)
     @Enumerated(EnumType.STRING)
-    private EventState state;
+    private StateAction state;
 
     @Column(name = "event_title", nullable = false)
     @Size(min = 3, max = 120)

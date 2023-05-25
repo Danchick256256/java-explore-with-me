@@ -23,6 +23,7 @@ public class AdminCategoriesController {
     private final CategoryService categoryService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto addAdminCategory(@RequestBody @Valid NewCategoryDto body,
                                         HttpServletRequest request) {
         log.info("{className: {}, method: {POST: {}}, data: {newCategoryDto: {}}}",
@@ -30,13 +31,14 @@ public class AdminCategoriesController {
         return categoryService.create(body);
     }
 
-    @PatchMapping
-    public CategoryDto updateAdminCategory(@RequestBody @Valid CategoryDto body,
+    @PatchMapping("/{catId}")
+    public CategoryDto updateAdminCategory(@PathVariable Long catId,
+                                           @RequestBody @Valid CategoryDto body,
                                            HttpServletRequest request) {
 
         log.info("{className: {}, method: {PATCH: {}}, data: {categoryDto: {}}}",
                 getClass().getName(), request.getRequestURI(), body);
-        return categoryService.update(body);
+        return categoryService.update(catId, body);
     }
 
     @DeleteMapping("/{catId}")
@@ -45,6 +47,6 @@ public class AdminCategoriesController {
         log.info("{className: {}, method: {DELETE: {}}, data: {categoryId: {}}}",
                 getClass().getName(), request.getRequestURI(), catId);
         categoryService.deleteById(catId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

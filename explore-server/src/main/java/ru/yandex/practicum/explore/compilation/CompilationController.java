@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping(path = "/compilations")
 @RequiredArgsConstructor
 public class CompilationController {
-    private final CompilationService service;
+    private final CompilationService compilationService;
 
     @GetMapping
     public List<CompilationDto> getCompilations(@RequestParam(required = false) Boolean pinned,
@@ -23,13 +23,13 @@ public class CompilationController {
                                                 HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {required: {}, from: {}, size: {}}}",
                 getClass().getName(), request.getRequestURI(), pinned, from, size);
-        return service.getAll(pinned, from, size);
+        return compilationService.getAll(pinned, from, size);
     }
 
     @GetMapping("/{compId}")
     public CompilationDto getCompilationById(@PathVariable Long compilationId, HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {compilationId: {}}}",
                 getClass().getName(), request.getRequestURI(), compilationId);
-        return service.getById(compilationId);
+        return compilationService.getById(compilationId);
     }
 }

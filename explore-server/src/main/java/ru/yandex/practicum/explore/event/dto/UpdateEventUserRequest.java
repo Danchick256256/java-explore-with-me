@@ -1,53 +1,44 @@
 package ru.yandex.practicum.explore.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
+import org.springframework.lang.Nullable;
 import ru.yandex.practicum.explore.event.model.Location;
-import ru.yandex.practicum.explore.util.OnCreate;
-import ru.yandex.practicum.explore.util.OnUpdate;
+import ru.yandex.practicum.explore.util.StateAction;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
 @ToString
 @Builder
 @Jacksonized
-public class NewEventDto {
-
-    @Positive(groups = {OnUpdate.class})
-    private Long eventId;
-
-    @NotNull(groups = {OnUpdate.class, OnCreate.class})
+public class UpdateEventUserRequest {
     @Size(min = 20, max = 2000)
     private String annotation;
 
-    @NotNull(groups = {OnUpdate.class, OnCreate.class})
     private Long category;
 
-    @NotNull(groups = {OnUpdate.class, OnCreate.class})
     @Size(min = 20, max = 7000)
     private String description;
 
-    @Future(groups = {OnUpdate.class, OnCreate.class})
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    @NotNull(groups = {OnCreate.class})
     private Location location;
 
     private Boolean paid;
 
-    @PositiveOrZero(groups = {OnUpdate.class, OnCreate.class})
     private Integer participantLimit;
 
     private Boolean requestModeration;
 
-    @NotNull(groups = {OnUpdate.class, OnCreate.class})
-    @Size(min = 3, max = 120)
+    private StateAction stateAction;
+
     private String title;
 }

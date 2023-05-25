@@ -6,10 +6,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.explore.event.dto.EventFullDto;
 import ru.yandex.practicum.explore.event.dto.EventShortDto;
-import ru.yandex.practicum.explore.event.dto.EventSort;
+import ru.yandex.practicum.explore.event.model.Event;
+import ru.yandex.practicum.explore.util.EventSort;
 import ru.yandex.practicum.explore.event.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class EventController {
     private final EventStat statClient;
 
     @GetMapping
-    public List<EventShortDto> getAllEvents(@RequestParam(required = false) String text,
+    public List<EventShortDto> getAllEvents(@RequestParam(defaultValue = "") String text,
                                             @RequestParam(required = false) List<Integer> categories,
                                             @RequestParam(required = false) Boolean paid,
                                             @RequestParam(required = false)
@@ -44,7 +46,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable Long id, HttpServletRequest request) {
+    public Event getEventById(@PathVariable Long id, HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {id: {}}}",
                 getClass().getName(), request.getRequestURI(), id);
 

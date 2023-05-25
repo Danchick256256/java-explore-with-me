@@ -1,4 +1,4 @@
-package ru.yandex.practicum.explore.event.dto;
+package ru.yandex.practicum.explore.util;
 
 public enum EventSort {
     EVENT_DATE,

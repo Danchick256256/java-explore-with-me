@@ -2,10 +2,12 @@ package ru.yandex.practicum.explore.event.service;
 
 import ru.yandex.practicum.explore.event.dto.EventFullDto;
 import ru.yandex.practicum.explore.event.dto.EventShortDto;
-import ru.yandex.practicum.explore.event.dto.EventSort;
+import ru.yandex.practicum.explore.event.dto.UpdateEventUserRequest;
+import ru.yandex.practicum.explore.util.EventSort;
 import ru.yandex.practicum.explore.util.EventState;
 import ru.yandex.practicum.explore.event.dto.NewEventDto;
 import ru.yandex.practicum.explore.event.model.Event;
+import ru.yandex.practicum.explore.util.StateAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,24 +18,24 @@ public interface EventService {
                                      LocalDateTime rangeEnd, Boolean onlyAvailable, Integer from, Integer size,
                                      EventSort sort);
 
-    EventFullDto getEventById(Long id);
+    Event getEventById(Long id);
 
     Event findEventById(Long eventId);
 
     List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size);
 
-    EventFullDto updateUserEvent(Long eventId, Long userId, NewEventDto eventShortDto);
+    Event updateUserEvent(Long eventId, Long userId, UpdateEventUserRequest eventShortDto);
 
-    EventFullDto addUserEvent(Long userId, NewEventDto eventDto);
+    Event addUserEvent(Long userId, NewEventDto eventDto);
 
-    EventFullDto getUserEventById(Long userId, Long eventId);
+    Event getUserEventById(Long userId, Long eventId);
 
     EventFullDto updateUserEventById(Long userId, Long eventId);
 
-    List<EventFullDto> searchEvents(List<Long> users, List<EventState> states, List<Integer> categories,
+    List<Event> searchEvents(List<Long> users, List<StateAction> states, List<Integer> categories,
                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                     Integer from, Integer size);
 
-    EventFullDto updateEventByAdmin(Long eventId, NewEventDto body);
+    Event updateEventByAdmin(Long eventId, UpdateEventUserRequest body);
 
 }

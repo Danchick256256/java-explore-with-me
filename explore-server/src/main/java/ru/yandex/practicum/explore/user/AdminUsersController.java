@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.explore.exception.BadRequestException;
 import ru.yandex.practicum.explore.user.dto.UserDto;
 import ru.yandex.practicum.explore.user.dto.UserIncomeDto;
 import ru.yandex.practicum.explore.user.service.UserService;
+import ru.yandex.practicum.explore.util.OnCreate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -31,8 +34,12 @@ public class AdminUsersController {
     }
 
     @PostMapping
+    @Validated({ OnCreate.class })
+    @ResponseStatus(HttpStatus.CREATED)
     public UserDto addAdmin(@RequestBody @Valid UserIncomeDto body,
                             HttpServletRequest request) {
+        if (body.getEmail() == null || (!body.getEmail().contains("@") && !body.getEmail().contains(".")))
+            throw new BadRequestException("Email is wrong");
         log.info("{className: {}, method: {POST: {}}, data: {{}}}",
                 getClass().getName(), request.getRequestURI(), body);
         return userService.addUser(body);
@@ -44,6 +51,6 @@ public class AdminUsersController {
         log.info("{className: {}, method: {DELETE: {}}, data: {userId: {}}",
                 getClass().getName(), request.getRequestURI(), userId);
         userService.deleteUserById(userId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

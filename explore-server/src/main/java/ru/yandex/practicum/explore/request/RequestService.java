@@ -1,5 +1,6 @@
 package ru.yandex.practicum.explore.request;
 
+import ru.yandex.practicum.explore.event.dto.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
 
 import java.util.List;
@@ -11,6 +12,8 @@ public interface RequestService {
     List<ParticipationRequestDto> getUserRequests(Long userId);
 
     ParticipationRequestDto addParticipationRequest(Long userId, Long eventId);
+
+    void updateRequest(Long userId, Long requestId, EventRequestStatusUpdateRequest eventDto);
 
     void cancelUserRequest(Long userId, Long requestId);
 }

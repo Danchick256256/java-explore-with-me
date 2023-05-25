@@ -3,6 +3,7 @@ package ru.yandex.practicum.explore.user.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 @AllArgsConstructor
@@ -21,9 +22,11 @@ public class User {
     private Long id;
 
     @Column(name = "user_email", nullable = false, unique = true)
+    @Email
+    @Size(min = 6, max = 254)
     private String email;
 
     @Column(name = "user_name", nullable = false)
-    @Size(min = 1, max = 255)
+    @Size(min = 2, max = 250)
     private String name;
 }

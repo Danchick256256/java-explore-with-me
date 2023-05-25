@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 import ru.yandex.practicum.explore.event.model.Location;
 import ru.yandex.practicum.explore.util.EventState;
+import ru.yandex.practicum.explore.util.StateAction;
 
 import java.time.LocalDateTime;
 
@@ -26,5 +27,5 @@ public class EventFullDto extends EventDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
-    private EventState state;
+    private StateAction state;
 }

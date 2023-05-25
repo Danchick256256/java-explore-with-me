@@ -20,6 +20,7 @@ public class AdminCompilationsController {
     private final CompilationService compilationService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto body,
                                          HttpServletRequest request) {
         log.info("{className: {}, method: {POST: {}}, data: {newCompilationDto: {}}}",
@@ -27,21 +28,21 @@ public class AdminCompilationsController {
         return compilationService.add(body);
     }
 
-    @DeleteMapping("/{compilationId}")
-    public ResponseEntity<Object> deleteCompilation(@PathVariable Long compilationId,
+    @DeleteMapping("/{compId}")
+    public ResponseEntity<Object> deleteCompilation(@PathVariable Long compId,
                                                        HttpServletRequest request) {
         log.info("{className: {}, method: {DELETE: {}}, data: {compilationId: {}}}",
-                getClass().getName(), request.getRequestURI(), compilationId);
-        compilationService.deleteById(compilationId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+                getClass().getName(), request.getRequestURI(), compId);
+        compilationService.deleteById(compId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PatchMapping("/{compilationId}")
-    public CompilationDto updateCompilation(@PathVariable Long compilationId,
+    @PatchMapping("/{compId}")
+    public CompilationDto updateCompilation(@PathVariable Long compId,
                                                       @RequestBody @Valid NewCompilationDto body,
                                                       HttpServletRequest request) {
         log.info("{className: {}, method: {PATCH: {}}, data: {compilationId: {}, newCompilationDto {}}}",
-                getClass().getName(), request.getRequestURI(), compilationId, body);
-        return compilationService.updateById(compilationId, body);
+                getClass().getName(), request.getRequestURI(), compId, body);
+        return compilationService.updateById(compId, body);
     }
 }

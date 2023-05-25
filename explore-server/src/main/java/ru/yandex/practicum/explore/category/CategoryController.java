@@ -27,7 +27,7 @@ public class CategoryController {
         return service.getAll(from, size);
     }
 
-    @GetMapping("/{catId}")
+    @GetMapping("/{categoryId}")
     public CategoryDto getCategoryById(@PathVariable Long categoryId, HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {categoryId: {}}}",
                 getClass().getName(), request.getRequestURI(), categoryId);

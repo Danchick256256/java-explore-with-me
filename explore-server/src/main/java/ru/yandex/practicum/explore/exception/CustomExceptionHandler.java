@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CustomExceptionHandler {
     @ExceptionHandler({ ValidationException.class, ConstraintViolationException.class,
-                        MissingServletRequestParameterException.class, HttpMessageNotReadableException.class,
+                        MissingServletRequestParameterException.class,
                         DuplicateKeyException.class, BadRequestException.class, MethodArgumentNotValidException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionHandler(Exception exception) {
@@ -58,7 +58,8 @@ public class CustomExceptionHandler {
                 LocalDateTime.now());
     }
 
-    @ExceptionHandler({ HttpClientErrorException.Conflict.class, DataIntegrityViolationException.class })
+    @ExceptionHandler({ HttpMessageNotReadableException.class, HttpClientErrorException.Conflict.class,
+                        DataIntegrityViolationException.class, ConflictRequestException.class })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse conditionsNotMetExceptionHandler(Exception exception) {
         String reason = "For the requested operation the conditions are not met.";

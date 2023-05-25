@@ -27,7 +27,7 @@ public class Compilation {
     private Boolean pinned;
 
     @Column(name = "compilation_title")
-    @Size(min = 3, max = 120)
+    @Size(min = 3, max = 50)
     private String title;
 
     @ManyToMany(cascade = CascadeType.ALL)

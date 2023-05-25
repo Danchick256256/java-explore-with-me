@@ -3,6 +3,7 @@ package ru.yandex.practicum.explore.compilation.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -16,5 +17,6 @@ public class NewCompilationDto {
     @Builder.Default()
     private Boolean pinned = false;
     @NotBlank
+    @Size(min = 3, max = 50)
     private String title;
 }

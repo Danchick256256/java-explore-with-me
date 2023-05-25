@@ -6,13 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.explore.event.dto.EventFullDto;
-import ru.yandex.practicum.explore.event.dto.EventRequestStatusUpdateRequest;
-import ru.yandex.practicum.explore.event.dto.EventShortDto;
+import ru.yandex.practicum.explore.event.dto.*;
+import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.request.RequestService;
 import ru.yandex.practicum.explore.util.OnCreate;
 import ru.yandex.practicum.explore.util.OnUpdate;
-import ru.yandex.practicum.explore.event.dto.NewEventDto;
 import ru.yandex.practicum.explore.event.service.EventService;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
 
@@ -41,16 +39,17 @@ public class UserController {
 
     @PostMapping("/events")
     @Validated({ OnCreate.class })
-    public EventFullDto addUserEvent(@PathVariable Long userId,
-                                     @RequestBody @Valid NewEventDto event,
-                                     HttpServletRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Event addUserEvent(@PathVariable Long userId,
+                              @RequestBody @Valid NewEventDto event,
+                              HttpServletRequest request) {
         log.info("{className: {}, method: {POST: {}}, data: {userId: {}, newEventDto: {}}}",
                 getClass().getName(), request.getRequestURI(), userId, event);
         return eventService.addUserEvent(userId, event);
     }
 
     @GetMapping("/events/{eventId}")
-    public EventFullDto getUserEventById(@PathVariable Long userId,
+    public Event getUserEventById(@PathVariable Long userId,
                                          @PathVariable Long eventId,
                                          HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {userId: {}, eventId: {}}}",
@@ -59,12 +58,12 @@ public class UserController {
     }
 
     @PatchMapping("/events/{eventId}")
-    @Validated({OnUpdate.class})
-    public EventFullDto updateUserEvent(@PathVariable Long eventId,
+    //@Validated({OnCreate.class})
+    public Event updateUserEvent(@PathVariable Long eventId,
                                         @PathVariable Long userId,
-                                        @RequestBody @Valid NewEventDto event,
+                                        @RequestBody @Valid UpdateEventUserRequest event,
                                         HttpServletRequest request) {
-        log.info("{className: {}, method: {GET: {}}, data: {userId: {},eventId: {} , newEventDto: {}}}",
+        log.info("{className: {}, method: {GET: {}}, data: {userId: {},eventId: {} , updateEventUserRequest: {}}}",
                 getClass().getName(), request.getRequestURI(), userId, eventId, event);
         return eventService.updateUserEvent(eventId, userId, event);
     }
@@ -79,13 +78,14 @@ public class UserController {
     }
 
     @PatchMapping("/events/{eventId}/requests")
-    public EventFullDto updateUserEventById(@PathVariable Long userId,
+    public ResponseEntity<Object> updateUserEventById(@PathVariable Long userId,
                                             @PathVariable Long eventId,
                                             @RequestBody @Valid EventRequestStatusUpdateRequest eventBody,
                                             HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {userId: {}, eventId: {}, eventRequestStatusUpdateRequest: {}}}",
                 getClass().getName(), request.getRequestURI(), userId, eventId, eventBody);
-        return eventService.updateUserEventById(userId, eventId);
+        requestService.updateRequest(userId, eventId, eventBody);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/requests")
@@ -98,6 +98,7 @@ public class UserController {
 
     @PostMapping("/requests")
     @Validated({ OnCreate.class })
+    @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addUserEventRequest(@PathVariable Long userId,
                                             @RequestParam Long eventId,
                                             HttpServletRequest request) {
