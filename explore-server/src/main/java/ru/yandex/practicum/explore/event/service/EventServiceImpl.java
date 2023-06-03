@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.explore.category.service.CategoryService;
-import ru.yandex.practicum.explore.event.dto.EventFullDto;
 import ru.yandex.practicum.explore.event.dto.EventShortDto;
 import ru.yandex.practicum.explore.event.dto.NewEventDto;
 import ru.yandex.practicum.explore.event.dto.UpdateEventUserRequest;
