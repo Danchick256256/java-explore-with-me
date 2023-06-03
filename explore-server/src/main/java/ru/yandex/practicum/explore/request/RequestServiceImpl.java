@@ -1,7 +1,6 @@
 package ru.yandex.practicum.explore.request;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,6 @@ import ru.yandex.practicum.explore.util.ParticipationStatus;
 import ru.yandex.practicum.explore.util.StateAction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.explore.compilation.dto.CompilationDto;
-import ru.yandex.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.yandex.practicum.explore.compilation.dto.UpdateCompilationDto;
 import ru.yandex.practicum.explore.compilation.model.Compilation;
 import ru.yandex.practicum.explore.compilation.service.CompilationService;

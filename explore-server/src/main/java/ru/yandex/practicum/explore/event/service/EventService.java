@@ -1,6 +1,5 @@
 package ru.yandex.practicum.explore.event.service;
 
-import ru.yandex.practicum.explore.event.dto.EventFullDto;
 import ru.yandex.practicum.explore.event.dto.EventShortDto;
 import ru.yandex.practicum.explore.event.dto.UpdateEventUserRequest;
 import ru.yandex.practicum.explore.util.EventSort;

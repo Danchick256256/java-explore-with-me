@@ -38,7 +38,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.jpa.domain.Specification.where;
-import static ru.yandex.practicum.explore.event.util.EventDtoMapper.eventToEventFullDto;
 import static ru.yandex.practicum.explore.event.util.EventDtoMapper.newDtoToEvent;
 
 @Service

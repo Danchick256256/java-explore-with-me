@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.explore.exception.NotFoundException;
 import ru.yandex.practicum.explore.category.repository.CategoryRepository;
 import ru.yandex.practicum.explore.category.dto.CategoryDto;
-import ru.yandex.practicum.explore.category.util.CategoryDtoMapper;
 import ru.yandex.practicum.explore.category.dto.NewCategoryDto;
 import ru.yandex.practicum.explore.category.model.Category;
 import ru.yandex.practicum.explore.event.repository.EventSpecificationRepository;

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.explore.compilation.service;
 
 import ru.yandex.practicum.explore.compilation.dto.CompilationDto;
-import ru.yandex.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.yandex.practicum.explore.compilation.dto.UpdateCompilationDto;
 import ru.yandex.practicum.explore.compilation.model.Compilation;
 
