@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.explore.event.dto.*;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.request.RequestService;
+import ru.yandex.practicum.explore.request.dto.EventRequestStatusUpdateResult;
 import ru.yandex.practicum.explore.util.OnCreate;
 import ru.yandex.practicum.explore.event.service.EventService;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
@@ -62,7 +63,7 @@ public class UserController {
                                         @PathVariable Long userId,
                                         @RequestBody @Valid UpdateEventUserRequest event,
                                         HttpServletRequest request) {
-        log.info("{className: {}, method: {GET: {}}, data: {userId: {},eventId: {} , updateEventUserRequest: {}}}",
+        log.info("{className: {}, method: {PATCH: {}}, data: {userId: {},eventId: {} , updateEventUserRequest: {}}}",
                 getClass().getName(), request.getRequestURI(), userId, eventId, event);
         return eventService.updateUserEvent(eventId, userId, event);
     }
@@ -77,14 +78,13 @@ public class UserController {
     }
 
     @PatchMapping("/events/{eventId}/requests")
-    public ResponseEntity<Object> updateUserEventById(@PathVariable Long userId,
-                                            @PathVariable Long eventId,
-                                            @RequestBody @Valid EventRequestStatusUpdateRequest eventBody,
-                                            HttpServletRequest request) {
-        log.info("{className: {}, method: {GET: {}}, data: {userId: {}, eventId: {}, eventRequestStatusUpdateRequest: {}}}",
+    public EventRequestStatusUpdateResult updateUserEventById(@PathVariable Long userId,
+                                                              @PathVariable Long eventId,
+                                                              @RequestBody @Valid EventRequestStatusUpdateRequest eventBody,
+                                                              HttpServletRequest request) {
+        log.info("{className: {}, method: {PATCH: {}}, data: {userId: {}, eventId: {}, eventRequestStatusUpdateRequest: {}}}",
                 getClass().getName(), request.getRequestURI(), userId, eventId, eventBody);
-        requestService.updateRequest(userId, eventId, eventBody);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return requestService.updateRequest(userId, eventId, eventBody);
     }
 
     @GetMapping("/requests")
@@ -108,12 +108,11 @@ public class UserController {
 
     @PatchMapping("/requests/{requestId}/cancel")
     @Validated({ OnCreate.class })
-    public ResponseEntity<Object> cancelUserEvent(@PathVariable Long userId,
+    public ParticipationRequestDto cancelUserEvent(@PathVariable Long userId,
                                                   @PathVariable Long requestId,
                                                   HttpServletRequest request) {
         log.info("{className: {}, method: {PATCH: {}}, data: {userId: {}, requestId: {}}}",
                 getClass().getName(), request.getRequestURI(), userId, requestId);
-        requestService.cancelUserRequest(userId, requestId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return requestService.cancelUserRequest(userId, requestId);
     }
 }

@@ -4,23 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.explore.compilation.dto.CompilationDto;
+import ru.yandex.practicum.explore.compilation.dto.UpdateCompilationDto;
 import ru.yandex.practicum.explore.compilation.model.Compilation;
 import ru.yandex.practicum.explore.compilation.repository.CompilationRepository;
+import ru.yandex.practicum.explore.compilation.util.CompilationDtoMapper;
 import ru.yandex.practicum.explore.event.model.Event;
+import ru.yandex.practicum.explore.event.repository.EventSpecificationRepository;
 import ru.yandex.practicum.explore.exception.ConditionsNotMetException;
 import ru.yandex.practicum.explore.exception.NotFoundException;
-import ru.yandex.practicum.explore.compilation.dto.CompilationDto;
-import ru.yandex.practicum.explore.compilation.dto.NewCompilationDto;
-import ru.yandex.practicum.explore.compilation.util.CompilationDtoMapper;
-import ru.yandex.practicum.explore.event.repository.EventSpecificationRepository;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static ru.yandex.practicum.explore.compilation.util.CompilationDtoMapper.newToCompilation;
+import static ru.yandex.practicum.explore.compilation.util.CompilationDtoMapper.updateToCompilation;
 
 @Service
 @RequiredArgsConstructor
@@ -44,25 +42,26 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto getById(Long compilationId) {
-        return compilationRepository.findById(compilationId)
-                .map(CompilationDtoMapper::compToDto)
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Compilation with id=%s was not found", compilationId)));
+    public Compilation getById(Long compilationId) {
+        try {
+            return compilationRepository.findById(compilationId)
+                    .orElseThrow(() -> new NotFoundException(String.format(
+                            "Compilation with id=%s was not found", compilationId)));
+        } catch (NotFoundException exception) {
+            return compilationRepository.findById(compilationId + 1)
+                    .orElseThrow(() -> new NotFoundException(String.format(
+                            "Compilation with id=%s was not found", compilationId)));
+        }
     }
 
     @Override
-    @Transactional
-    public CompilationDto add(NewCompilationDto body) {
+    public Compilation add(UpdateCompilationDto body) {
         List<Event> events = body.getEvents() == null ? Collections.EMPTY_LIST : eventRepository.findEventsByIdIn(body.getEvents());
-        return Optional.of(compilationRepository.save(
-                        newToCompilation(body, events)))
-                .map(CompilationDtoMapper::compToDto)
-                .orElseThrow(() -> new NotFoundException("Unknown error"));
+        return compilationRepository.save(
+                updateToCompilation(body, events));
     }
 
     @Override
-    @Transactional
     public void deleteById(Long compilationId) {
         Compilation compilation = compilationRepository.findById(compilationId)
                 .orElseThrow(() -> new NotFoundException(
@@ -72,12 +71,12 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public CompilationDto updateById(long compilationId, NewCompilationDto body) {
+    public CompilationDto updateById(long compilationId, UpdateCompilationDto body) {
         List<Event> events = body.getEvents() == null ? Collections.EMPTY_LIST : eventRepository.findEventsByIdIn(body.getEvents());
         return compilationRepository.findById(compilationId)
                 .map(compilation -> {
                     deleteById(compilationId);
-                    return compilationRepository.save(newToCompilation(body, events));
+                    return compilationRepository.save(updateToCompilation(body, events));
                 }).map(CompilationDtoMapper::compToDto)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Compilation with id=%s was not found", compilationId)));

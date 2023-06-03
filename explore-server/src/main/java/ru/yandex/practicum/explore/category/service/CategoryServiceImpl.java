@@ -37,9 +37,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryDto> getAll(Integer from, Integer size) {
+    public List<Category> getAll(Integer from, Integer size) {
         return categoryRepository.findAll(PageRequest.of(from, size, Sort.unsorted())).stream()
-                .map(CategoryDtoMapper::categoryToDto)
                 .collect(Collectors.toList());
     }
 

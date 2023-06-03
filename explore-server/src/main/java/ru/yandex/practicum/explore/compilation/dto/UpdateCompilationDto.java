@@ -13,11 +13,12 @@ import java.util.Set;
 @Getter
 @ToString
 @Builder
-public class NewCompilationDto {
+public class UpdateCompilationDto {
     private Set<Long> events;
     @Builder.Default()
     private Boolean pinned = false;
-
+    @NotNull
+    @NotBlank
     @Size(min = 3, max = 50)
     private String title;
 }

@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS compilations (
   compilation_pinned BOOLEAN NOT NULL,
   compilation_title VARCHAR
 );
+
 CREATE TABLE IF NOT EXISTS compilation_events (
   compilation_events_id BIGINT GENERATED ALWAYS AS IDENTITY CONSTRAINT ce_pk PRIMARY KEY,
   compilation_events_compilation_id BIGINT NOT NULL CONSTRAINT ce_comp_fk REFERENCES compilations ON UPDATE CASCADE ON DELETE CASCADE,
@@ -43,3 +44,4 @@ CREATE TABLE IF NOT EXISTS requests (
   requests_created TIMESTAMP NOT NULL,
   requests_status VARCHAR NOT NULL
 );
+

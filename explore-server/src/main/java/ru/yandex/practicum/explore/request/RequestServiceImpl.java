@@ -1,13 +1,16 @@
 package ru.yandex.practicum.explore.request;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.explore.event.dto.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.explore.event.model.Event;
+import ru.yandex.practicum.explore.event.repository.EventSpecificationRepository;
 import ru.yandex.practicum.explore.event.service.EventService;
 import ru.yandex.practicum.explore.exception.NotFoundException;
+import ru.yandex.practicum.explore.request.dto.EventRequestStatusUpdateResult;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
 import ru.yandex.practicum.explore.request.model.ParticipationRequest;
 import ru.yandex.practicum.explore.request.repository.RequestRepository;
@@ -17,12 +20,15 @@ import ru.yandex.practicum.explore.user.service.UserService;
 import ru.yandex.practicum.explore.util.ParticipationStatus;
 import ru.yandex.practicum.explore.util.StateAction;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.explore.request.util.RequestMapper.getNewRequest;
 import static ru.yandex.practicum.explore.request.util.RequestMapper.requestToDto;
 import static ru.yandex.practicum.explore.util.ParticipationStatus.CONFIRMED;
+import static ru.yandex.practicum.explore.util.ParticipationStatus.REJECTED;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +38,7 @@ public class RequestServiceImpl implements RequestService {
     private final EventService eventService;
     private final UserService userService;
     private final RequestRepository requestRepository;
+    private final EventSpecificationRepository eventSpecificationRepository;
 
     @Override
     public List<ParticipationRequestDto> getUserEventRequests(Long userId, Long eventId) {
@@ -75,19 +82,46 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public void cancelUserRequest(Long userId, Long requestId) {
+    public ParticipationRequestDto cancelUserRequest(Long userId, Long requestId) {
         userService.getUserById(userId);
-        getRequest(requestId);
+        ParticipationRequest request = getRequest(requestId);
+        request.setStatus(ParticipationStatus.CANCELED);
         requestRepository.deleteById(requestId);
+        return RequestMapper.requestToDto(request);
     }
 
     @Override
-    public void updateRequest(Long userId, Long requestId, EventRequestStatusUpdateRequest eventDto) {
-        for (Long eventId : eventDto.getRequestIds()) {
-            ParticipationRequest request = getRequest(eventId);
+    public EventRequestStatusUpdateResult updateRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest eventDto) {
+        userService.getUserById(userId);
+        Event event = eventService.findEventById(eventId);
+        List<ParticipationRequestDto> confirmedList = new ArrayList<>();
+        List<ParticipationRequestDto> rejectedList = new ArrayList<>();
+        EventRequestStatusUpdateResult updateResult = EventRequestStatusUpdateResult.builder()
+                .confirmedRequests(confirmedList)
+                .rejectedRequests(rejectedList)
+                .build();
+        for (Long requestId : eventDto.getRequestIds()) {
+            ParticipationRequest request = getRequest(requestId);
+            if (request.getStatus().equals(CONFIRMED) && eventDto.getStatus().equals(REJECTED))
+                throw new DataIntegrityViolationException("Request is already accepted");
             request.setStatus(eventDto.getStatus());
-            requestRepository.save(request);
+            if (eventDto.getStatus() == CONFIRMED) {
+                if (event.getConfirmedRequests() >= event.getParticipantLimit())
+                    throw new DataIntegrityViolationException("Requests limit");
+                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                eventSpecificationRepository.save(event);
+                List<ParticipationRequestDto> requestDtos = updateResult.getConfirmedRequests();
+                requestDtos.add(RequestMapper.requestToDto(request));
+                updateResult.setConfirmedRequests(requestDtos);
+            } else if (eventDto.getStatus() == REJECTED) {
+                event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+                eventSpecificationRepository.save(event);
+                List<ParticipationRequestDto> requestDtos = updateResult.getRejectedRequests();
+                requestDtos.add(RequestMapper.requestToDto(request));
+                updateResult.setRejectedRequests(requestDtos);
+            }
         }
+        return updateResult;
     }
 
     private Long countRequests(Long eventId) {

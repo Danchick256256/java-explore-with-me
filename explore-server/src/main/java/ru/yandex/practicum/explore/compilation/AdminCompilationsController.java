@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.explore.compilation.dto.CompilationDto;
 import ru.yandex.practicum.explore.compilation.dto.NewCompilationDto;
+import ru.yandex.practicum.explore.compilation.dto.UpdateCompilationDto;
+import ru.yandex.practicum.explore.compilation.model.Compilation;
 import ru.yandex.practicum.explore.compilation.service.CompilationService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +23,8 @@ public class AdminCompilationsController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody @Valid NewCompilationDto body,
-                                         HttpServletRequest request) {
+    public Compilation addCompilation(@RequestBody @Valid UpdateCompilationDto body,
+                                      HttpServletRequest request) {
         log.info("{className: {}, method: {POST: {}}, data: {newCompilationDto: {}}}",
                 getClass().getName(), request.getRequestURI(), body);
         return compilationService.add(body);
@@ -30,7 +32,7 @@ public class AdminCompilationsController {
 
     @DeleteMapping("/{compId}")
     public ResponseEntity<Object> deleteCompilation(@PathVariable Long compId,
-                                                       HttpServletRequest request) {
+                                                    HttpServletRequest request) {
         log.info("{className: {}, method: {DELETE: {}}, data: {compilationId: {}}}",
                 getClass().getName(), request.getRequestURI(), compId);
         compilationService.deleteById(compId);
@@ -39,9 +41,9 @@ public class AdminCompilationsController {
 
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable Long compId,
-                                                      @RequestBody @Valid NewCompilationDto body,
-                                                      HttpServletRequest request) {
-        log.info("{className: {}, method: {PATCH: {}}, data: {compilationId: {}, newCompilationDto {}}}",
+                                            @RequestBody @Valid UpdateCompilationDto body,
+                                            HttpServletRequest request) {
+        log.info("{className: {}, method: {PATCH: {}}, data: {compId: {}, newCompilationDto {}}}",
                 getClass().getName(), request.getRequestURI(), compId, body);
         return compilationService.updateById(compId, body);
     }

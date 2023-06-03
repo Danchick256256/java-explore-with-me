@@ -98,28 +98,17 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event updateUserEvent(Long eventId, Long userId, UpdateEventUserRequest eventDto) {
+        Event event = findEventById(eventId);
+        if (event.getState() != null && event.getState().equals(StateAction.PUBLISHED))
+            throw new DataIntegrityViolationException("Event is already published");
+        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.PUBLISHED))
+            throw new DataIntegrityViolationException("Event is already published");
+        if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.CANCEL_REVIEW))
+            event.setState(StateAction.CANCELED);
         userService.getUserById(userId);
         if (eventDto.getEventDate() != null && eventDto.getEventDate().isBefore(LocalDateTime.now()))
             throw new BadRequestException("Event is already started");
-        return updateEventData(findEventById(eventId), eventDto);
-    }
-
-    @Override
-    @Transactional
-    public EventFullDto updateUserEventById(Long userId, Long eventId) {
-        userService.getUserById(userId);
-        Event event = findEventById(eventId);
-
-        if (!event.getInitiator().getId().equals(userId)) {
-            throw new NotAllowedException(
-                    String.format("User with id=%s is not owner of event with id=%s", userId, eventId));
-        }
-        if (!event.getState().equals(StateAction.PUBLISH_EVENT))
-            event.setState(event.getState().equals(StateAction.PENDING) ? StateAction.REJECT_EVENT : StateAction.PENDING);
-        else
-            throw new NotAllowedException("Only pending or canceled events can be changed");
-
-        return eventToEventFullDto(event);
+        return updateEventData(event, eventDto);
     }
 
     @Override
@@ -155,7 +144,6 @@ public class EventServiceImpl implements EventService {
         event.setPaid(Optional.ofNullable(body.getPaid()).orElse(event.getPaid()));
         event.setParticipantLimit(Optional.ofNullable(body.getParticipantLimit()).orElse(event.getParticipantLimit()));
         event.setRequestModeration(Optional.ofNullable(body.getRequestModeration()).orElse(event.getRequestModeration()));
-        event.setState(Optional.ofNullable(body.getStateAction()).orElse(event.getState()));
         event.setTitle(Optional.ofNullable(body.getTitle()).orElse(event.getTitle()));
 
         Optional.ofNullable(body.getLocation())
@@ -168,19 +156,28 @@ public class EventServiceImpl implements EventService {
 
         Optional.ofNullable(body.getStateAction())
                 .ifPresent(stateAction -> {
-                    if (event.getState().equals(StateAction.REJECTED) && stateAction.equals(StateAction.PUBLISH_EVENT))
-                        throw new DataIntegrityViolationException("Event is already published");
+                    log.info("START: EVENT " + event.getState() + ", STATE: " + stateAction);
                     if (event.getState().equals(StateAction.PUBLISHED) && stateAction.equals(StateAction.REJECT_EVENT))
                         throw new DataIntegrityViolationException("Event is already published");
-
                     if (event.getState().equals(StateAction.PUBLISHED) && stateAction.equals(StateAction.PUBLISH_EVENT))
                         throw new ConflictRequestException("Event is already published");
+                    if (event.getState().equals(StateAction.REJECTED) && stateAction.equals(StateAction.PUBLISH_EVENT))
+                        throw new DataIntegrityViolationException("Event is already published");
+                    if (event.getState().equals(StateAction.PUBLISH_EVENT) && stateAction.equals(StateAction.PUBLISHED))
+                        throw new DataIntegrityViolationException("Event is already published");
+
                     if (stateAction.equals(StateAction.SEND_TO_REVIEW))
                         event.setState(StateAction.PENDING);
+
+                    if (stateAction.equals(StateAction.CANCEL_REVIEW))
+                        event.setState(StateAction.CANCELED);
+
                     if (stateAction.equals(StateAction.REJECT_EVENT))
                         event.setState(StateAction.REJECTED);
+
                     if (stateAction.equals(StateAction.PUBLISH_EVENT))
                         event.setState(StateAction.PUBLISHED);
+                    log.info("END: EVENT " + event.getState() + ", STATE: " + stateAction);
                 });
         return eventRepository.save(event);
     }

@@ -8,5 +8,6 @@ public enum StateAction {
     PUBLISHED,
     CONFIRMED,
     REJECTED,
-    SEND_TO_REVIEW
+    SEND_TO_REVIEW,
+    CANCEL_REVIEW
 }

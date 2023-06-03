@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.explore.compilation.dto.CompilationDto;
+import ru.yandex.practicum.explore.compilation.model.Compilation;
 import ru.yandex.practicum.explore.compilation.service.CompilationService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +28,9 @@ public class CompilationController {
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto getCompilationById(@PathVariable Long compilationId, HttpServletRequest request) {
+    public Compilation getCompilationById(@PathVariable Long compId, HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {compilationId: {}}}",
-                getClass().getName(), request.getRequestURI(), compilationId);
-        return compilationService.getById(compilationId);
+                getClass().getName(), request.getRequestURI(), compId);
+        return compilationService.getById(compId);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.explore.category.dto.CategoryDto;
+import ru.yandex.practicum.explore.category.model.Category;
 import ru.yandex.practicum.explore.category.util.CategoryDtoMapper;
 import ru.yandex.practicum.explore.category.service.CategoryService;
 
@@ -19,9 +20,9 @@ public class CategoryController {
     private final CategoryService service;
 
     @GetMapping
-    public List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") Integer from,
-                                           @RequestParam(defaultValue = "10") Integer size,
-                                           HttpServletRequest request) {
+    public List<Category> getCategories(@RequestParam(defaultValue = "0") Integer from,
+                                        @RequestParam(defaultValue = "10") Integer size,
+                                        HttpServletRequest request) {
         log.info("{className: {}, method: {GET: {}}, data: {from: {}, size: {}}}",
                 getClass().getName(), request.getRequestURI(), from, size);
         return service.getAll(from, size);

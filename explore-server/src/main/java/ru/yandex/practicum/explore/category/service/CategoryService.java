@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    List<CategoryDto> getAll(Integer from, Integer size);
+    List<Category> getAll(Integer from, Integer size);
 
     Category findById(Long catId);
 

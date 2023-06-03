@@ -29,8 +29,6 @@ public interface EventService {
 
     Event getUserEventById(Long userId, Long eventId);
 
-    EventFullDto updateUserEventById(Long userId, Long eventId);
-
     List<Event> searchEvents(List<Long> users, List<StateAction> states, List<Integer> categories,
                                     LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                     Integer from, Integer size);

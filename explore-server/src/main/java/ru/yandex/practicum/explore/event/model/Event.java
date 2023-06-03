@@ -1,5 +1,6 @@
 package ru.yandex.practicum.explore.event.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.yandex.practicum.explore.category.model.Category;
 import ru.yandex.practicum.explore.user.model.User;
@@ -43,6 +44,7 @@ public class Event {
     private String description;
 
     @Column(name = "event_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
     @ManyToOne
@@ -60,6 +62,7 @@ public class Event {
     private Integer participantLimit;
 
     @Column(name = "event_published_on", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
 
     @Column(name = "event_request_moderation")
