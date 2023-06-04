@@ -40,7 +40,7 @@ public class AdminCompilationsController {
 
     @PatchMapping("/{compId}")
     public CompilationDto updateCompilation(@PathVariable Long compId,
-                                            @RequestBody @Valid UpdateCompilationDto body,
+                                            @RequestBody /*@Valid*/ UpdateCompilationDto body,
                                             HttpServletRequest request) {
         log.info("{className: {}, method: {PATCH: {}}, data: {compId: {}, newCompilationDto {}}}",
                 getClass().getName(), request.getRequestURI(), compId, body);
