@@ -3,7 +3,6 @@ package ru.yandex.practicum.explore.event.service;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -98,9 +97,9 @@ public class EventServiceImpl implements EventService {
     public Event updateUserEvent(Long eventId, Long userId, UpdateEventUserRequest eventDto) {
         Event event = findEventById(eventId);
         if (event.getState() != null && event.getState().equals(StateAction.PUBLISHED))
-            throw new DataIntegrityViolationException("Event is already published");
+            throw new ConflictRequestException("Event is already published");
         if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.PUBLISHED))
-            throw new DataIntegrityViolationException("Event is already published");
+            throw new ConflictRequestException("Event is already published");
         if (eventDto.getStateAction() != null && eventDto.getStateAction().equals(StateAction.CANCEL_REVIEW))
             event.setState(StateAction.CANCELED);
         userService.getUserById(userId);
@@ -156,13 +155,13 @@ public class EventServiceImpl implements EventService {
                 .ifPresent(stateAction -> {
                     log.info("START: EVENT " + event.getState() + ", STATE: " + stateAction);
                     if (event.getState().equals(StateAction.PUBLISHED) && stateAction.equals(StateAction.REJECT_EVENT))
-                        throw new DataIntegrityViolationException("Event is already published");
+                        throw new ConflictRequestException("Event is already published");
                     if (event.getState().equals(StateAction.PUBLISHED) && stateAction.equals(StateAction.PUBLISH_EVENT))
                         throw new ConflictRequestException("Event is already published");
                     if (event.getState().equals(StateAction.REJECTED) && stateAction.equals(StateAction.PUBLISH_EVENT))
-                        throw new DataIntegrityViolationException("Event is already published");
+                        throw new ConflictRequestException("Event is already published");
                     if (event.getState().equals(StateAction.PUBLISH_EVENT) && stateAction.equals(StateAction.PUBLISHED))
-                        throw new DataIntegrityViolationException("Event is already published");
+                        throw new ConflictRequestException("Event is already published");
 
                     if (stateAction.equals(StateAction.SEND_TO_REVIEW))
                         event.setState(StateAction.PENDING);

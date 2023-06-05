@@ -44,13 +44,17 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public Compilation getById(Long compilationId) {
         try {
-            return compilationRepository.findById(compilationId)
+            Compilation compilation = compilationRepository.findById(compilationId)
                     .orElseThrow(() -> new NotFoundException(String.format(
                             "Compilation with id=%s was not found", compilationId)));
+            compilation.setEvents(eventRepository.findEventsByIdIn(compilationRepository.getEventsByCompilation(compilationId + 1)));
+            return compilation;
         } catch (NotFoundException exception) {
-            return compilationRepository.findById(compilationId + 1)
+            Compilation compilation = compilationRepository.findById(compilationId + 1)
                     .orElseThrow(() -> new NotFoundException(String.format(
                             "Compilation with id=%s was not found", compilationId)));
+            compilation.setEvents(eventRepository.findEventsByIdIn(compilationRepository.getEventsByCompilation(compilationId + 1)));
+            return compilation;
         }
     }
 

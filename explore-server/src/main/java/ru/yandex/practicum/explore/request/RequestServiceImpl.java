@@ -1,13 +1,13 @@
 package ru.yandex.practicum.explore.request;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.explore.event.dto.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.event.repository.EventSpecificationRepository;
 import ru.yandex.practicum.explore.event.service.EventService;
+import ru.yandex.practicum.explore.exception.ConflictRequestException;
 import ru.yandex.practicum.explore.exception.NotFoundException;
 import ru.yandex.practicum.explore.request.dto.EventRequestStatusUpdateResult;
 import ru.yandex.practicum.explore.request.dto.ParticipationRequestDto;
@@ -60,16 +60,16 @@ public class RequestServiceImpl implements RequestService {
         User user = userService.getUserById(userId);
         Event event = eventService.findEventById(eventId);
         if (!event.getState().equals(StateAction.PUBLISHED))
-            throw new DataIntegrityViolationException("Participation in unpublished events is denied");
+            throw new ConflictRequestException("Participation in unpublished events is denied");
         if (event.getInitiator().getId().equals(userId))
-            throw new DataIntegrityViolationException(
+            throw new ConflictRequestException(
                     String.format("User id=%s is owner of event id=%s. Participation in your own events is denied",
                             userId, eventId));
         if (requestRepository.findAllByRequester_IdAndEvent_Id(userId, eventId).stream().findFirst().isPresent())
-            throw new DataIntegrityViolationException(
+            throw new ConflictRequestException(
                     String.format("Request from user id=%s for event id=%s already exist.", userId, eventId));
         if (event.getParticipantLimit() != 0 && countRequests(eventId) >= event.getParticipantLimit())
-            throw new DataIntegrityViolationException("The limit on the number of participants has been exceeded");
+            throw new ConflictRequestException("The limit on the number of participants has been exceeded");
         ParticipationRequest request = getNewRequest(user, event);
         if (event.getParticipantLimit() == 0)
             request.setStatus(CONFIRMED);
@@ -101,11 +101,11 @@ public class RequestServiceImpl implements RequestService {
         for (Long requestId : eventDto.getRequestIds()) {
             ParticipationRequest request = getRequest(requestId);
             if (request.getStatus().equals(CONFIRMED) && eventDto.getStatus().equals(REJECTED))
-                throw new DataIntegrityViolationException("Request is already accepted");
+                throw new ConflictRequestException("Request is already accepted");
             request.setStatus(eventDto.getStatus());
             if (eventDto.getStatus() == CONFIRMED) {
                 if (event.getConfirmedRequests() >= event.getParticipantLimit())
-                    throw new DataIntegrityViolationException("Requests limit");
+                    throw new ConflictRequestException("Requests limit");
                 event.setConfirmedRequests(event.getConfirmedRequests() + 1);
                 eventSpecificationRepository.save(event);
                 List<ParticipationRequestDto> requestDtos = updateResult.getConfirmedRequests();

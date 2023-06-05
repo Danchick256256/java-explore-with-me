@@ -58,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteById(Long catId) {
-        if (eventRepository.existsById(catId)) {
+        if (categoryRepository.existsById(catId) && eventRepository.findEventsByCategory_Id(catId).stream().findAny().isEmpty()) {
             categoryRepository.deleteById(catId);
         } else
             throw new ConflictRequestException("Category with id=" + catId + " is not exists");
