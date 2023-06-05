@@ -26,7 +26,7 @@ public class CustomExceptionHandler {
             DuplicateKeyException.class, BadRequestException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionHandler(Exception exception) {
-        String reason = "For the requested operation the conditions are not met.";
+        String reason = "BAD_REQUEST. For the requested operation the conditions are not met.";
         log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason,
                 HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -36,7 +36,7 @@ public class CustomExceptionHandler {
             NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse entityNotFoundExceptionHandler(Exception exception) {
-        String reason = "The required object was not found.";
+        String reason = "NOT_FOUND. The required object was not found.";
         log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
 
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason, HttpStatus.NOT_FOUND,
@@ -48,7 +48,7 @@ public class CustomExceptionHandler {
             IllegalStateException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse notAllowedExceptionHandler(Exception exception) {
-        String reason = "For the requested operation the conditions are not met.";
+        String reason = "FORBIDDEN. For the requested operation the conditions are not met.";
         log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
 
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason, HttpStatus.FORBIDDEN,
@@ -59,7 +59,7 @@ public class CustomExceptionHandler {
             DataIntegrityViolationException.class, ConflictRequestException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse conditionsNotMetExceptionHandler(Exception exception) {
-        String reason = "For the requested operation the conditions are not met.";
+        String reason = "CONFLICT. For the requested operation the conditions are not met.";
         log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
 
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason, HttpStatus.CONFLICT,
