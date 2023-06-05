@@ -56,7 +56,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Compilation add(UpdateCompilationDto body) {
-        List<Event> events = body.getEvents() == null ? Collections.EMPTY_LIST : eventRepository.findEventsByIdIn(body.getEvents());
+        List<Event> events = body.getEvents() == null ? Collections.emptyList() : eventRepository.findEventsByIdIn(body.getEvents());
         return compilationRepository.save(
                 updateToCompilation(body, events));
     }
@@ -72,12 +72,10 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto updateById(long compilationId, UpdateCompilationDto body) {
-        List<Event> events = body.getEvents() == null ? Collections.EMPTY_LIST : eventRepository.findEventsByIdIn(body.getEvents());
+        List<Event> events = body.getEvents() == null ? Collections.emptyList() : eventRepository.findEventsByIdIn(body.getEvents());
         return compilationRepository.findById(compilationId)
-                .map(compilation -> {
-                    deleteById(compilationId);
-                    return compilationRepository.save(updateToCompilation(body, events));
-                }).map(CompilationDtoMapper::compToDto)
+                .map(compilation -> compilationRepository.save(updateToCompilation(body, events)))
+                .map(CompilationDtoMapper::compToDto)
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Compilation with id=%s was not found", compilationId)));
     }

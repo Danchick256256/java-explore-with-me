@@ -21,14 +21,13 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 @NoArgsConstructor
 public class CustomExceptionHandler {
-    @ExceptionHandler({ ValidationException.class, ConstraintViolationException.class,
-                        MissingServletRequestParameterException.class,
-                        DuplicateKeyException.class, BadRequestException.class, MethodArgumentNotValidException.class })
+    @ExceptionHandler({ValidationException.class, ConstraintViolationException.class,
+            MissingServletRequestParameterException.class,
+            DuplicateKeyException.class, BadRequestException.class, MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse illegalArgumentExceptionHandler(Exception exception) {
         String reason = "For the requested operation the conditions are not met.";
-        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", exception.getMessage(), reason, HttpStatus.BAD_REQUEST.name(),
-                LocalDateTime.now());
+        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason,
                 HttpStatus.BAD_REQUEST, LocalDateTime.now());
     }
@@ -38,8 +37,7 @@ public class CustomExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse entityNotFoundExceptionHandler(Exception exception) {
         String reason = "The required object was not found.";
-        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.NOT_FOUND.name(), reason, exception.getMessage(),
-                LocalDateTime.now());
+        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
 
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason, HttpStatus.NOT_FOUND,
                 LocalDateTime.now());
@@ -51,20 +49,18 @@ public class CustomExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse notAllowedExceptionHandler(Exception exception) {
         String reason = "For the requested operation the conditions are not met.";
-        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.FORBIDDEN.name(), reason, exception.getMessage(),
-                LocalDateTime.now());
+        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
 
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason, HttpStatus.FORBIDDEN,
                 LocalDateTime.now());
     }
 
-    @ExceptionHandler({ HttpMessageNotReadableException.class, HttpClientErrorException.Conflict.class,
-                        DataIntegrityViolationException.class, ConflictRequestException.class })
+    @ExceptionHandler({HttpMessageNotReadableException.class, HttpClientErrorException.Conflict.class,
+            DataIntegrityViolationException.class, ConflictRequestException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse conditionsNotMetExceptionHandler(Exception exception) {
         String reason = "For the requested operation the conditions are not met.";
-        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.CONFLICT.name(), reason, exception.getMessage(),
-                LocalDateTime.now());
+        log.warn("{STATUS: {}, reason: {}, message: {}, time: {}}", HttpStatus.BAD_REQUEST.name(), reason, exception.getMessage(), LocalDateTime.now());
 
         return new ErrorResponse(exception.getStackTrace(), exception.getMessage(), reason, HttpStatus.CONFLICT,
                 LocalDateTime.now());

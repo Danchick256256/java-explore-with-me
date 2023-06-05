@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.explore.exception.ConflictRequestException;
 import ru.yandex.practicum.explore.exception.NotFoundException;
 import ru.yandex.practicum.explore.category.repository.CategoryRepository;
 import ru.yandex.practicum.explore.category.dto.CategoryDto;
@@ -58,10 +59,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteById(Long catId) {
-        findById(catId);
-        if (eventRepository.findEventsByCategory_Id(catId).stream().findAny().isEmpty()) {
+        if (eventRepository.existsById(catId)) {
             categoryRepository.deleteById(catId);
         } else
-            throw new DataIntegrityViolationException("For the requested operation the conditions are not met.");
+            throw new ConflictRequestException("Category with id=" + catId + " is not exists");
     }
 }
