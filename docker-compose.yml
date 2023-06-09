@@ -16,20 +16,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - TZ=Europe/Moscow
 
-  explore-server:
-    build: ./explore-server
-    image: explore-server
-    container_name: explore-server
-    ports:
-      - "8080:8080"
-    depends_on:
-      - explore-db
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://explore-db:5432/explore-db
-      - POSTGRES_DB=explore-db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - TZ=Europe/Moscow
+
 
   explore-db:
     image: postgres:13.7-alpine

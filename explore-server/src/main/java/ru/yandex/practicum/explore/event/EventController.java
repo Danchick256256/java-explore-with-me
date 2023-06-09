@@ -4,10 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.explore.event.dto.EventShortDto;
 import ru.yandex.practicum.explore.event.model.Event;
-import ru.yandex.practicum.explore.util.EventSort;
 import ru.yandex.practicum.explore.event.service.EventService;
+import ru.yandex.practicum.explore.util.EventSort;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -18,12 +17,11 @@ import java.util.List;
 @RequestMapping(path = "/events")
 @RequiredArgsConstructor
 public class EventController {
-
     private final EventService eventService;
     private final EventStat statClient;
 
     @GetMapping
-    public List<EventShortDto> getAllEvents(@RequestParam(defaultValue = "") String text,
+    public List<Event> getAllEvents(@RequestParam(defaultValue = "") String text,
                                             @RequestParam(required = false) List<Integer> categories,
                                             @RequestParam(required = false) Boolean paid,
                                             @RequestParam(required = false)

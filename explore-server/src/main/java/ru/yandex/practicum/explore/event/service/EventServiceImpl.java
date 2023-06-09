@@ -9,14 +9,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.explore.category.service.CategoryService;
-import ru.yandex.practicum.explore.event.dto.EventShortDto;
+import ru.yandex.practicum.explore.comments.service.CommentService;
 import ru.yandex.practicum.explore.event.dto.NewEventDto;
 import ru.yandex.practicum.explore.event.dto.UpdateEventUserRequest;
 import ru.yandex.practicum.explore.event.model.Event;
 import ru.yandex.practicum.explore.event.model.Location;
 import ru.yandex.practicum.explore.event.repository.EventSpecificationRepository;
 import ru.yandex.practicum.explore.event.repository.LocationRepository;
-import ru.yandex.practicum.explore.event.util.EventDtoMapper;
 import ru.yandex.practicum.explore.exception.BadRequestException;
 import ru.yandex.practicum.explore.exception.ConflictRequestException;
 import ru.yandex.practicum.explore.exception.NotAllowedException;
@@ -36,6 +35,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.jpa.domain.Specification.where;
+import static ru.yandex.practicum.explore.event.util.EventDtoMapper.eventToEventWithComments;
 import static ru.yandex.practicum.explore.event.util.EventDtoMapper.newDtoToEvent;
 
 @Service
@@ -50,19 +50,21 @@ public class EventServiceImpl implements EventService {
     private final EventSpecificationRepository specRepository;
     private final RequestRepository requestRepository;
     private final LocationRepository locationRepository;
+    private final CommentService commentService;
 
     @Override
-    public List<EventShortDto> getUserEvents(Long userId, Integer from, Integer size) {
+    public List<Event> getUserEvents(Long userId, Integer from, Integer size) {
         userService.getUserById(userId);
         return eventRepository.findEventsByInitiatorId(userId, PageRequest.of(from, size, Sort.unsorted())).stream()
-                .map(EventDtoMapper::eventToShortDto)
+                .map(event -> eventToEventWithComments(event, commentService.getCommentsByEventId(event.getId())))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Event findEventById(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(
-                String.format("Event with id=%s was not found", eventId)));
+        return eventToEventWithComments(eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException(
+                String.format("Event with id=%s was not found", eventId))), commentService.getCommentsByEventId(eventId));
+
     }
 
     @Override
@@ -105,7 +107,7 @@ public class EventServiceImpl implements EventService {
         userService.getUserById(userId);
         if (eventDto.getEventDate() != null && eventDto.getEventDate().isBefore(LocalDateTime.now()))
             throw new BadRequestException("Event is already started");
-        return updateEventData(event, eventDto);
+        return eventToEventWithComments(updateEventData(event, eventDto), commentService.getCommentsByEventId(eventId));
     }
 
     @Override
@@ -119,9 +121,11 @@ public class EventServiceImpl implements EventService {
                             .and((event, cq, cb) -> cb.greaterThan(event.get("eventDate"), rangeStart))
                             .and((event, cq, cb) -> cb.lessThan(event.get("eventDate"), rangeEnd)), PageRequest.of(from, size, Sort.unsorted()))
                     .stream()
+                    .map(event -> eventToEventWithComments(event, commentService.getCommentsByEventId(event.getId())))
                     .collect(Collectors.toList());
         } else {
             return eventRepository.findAll(PageRequest.of(from, size, Sort.unsorted())).stream()
+                    .map(event -> eventToEventWithComments(event, commentService.getCommentsByEventId(event.getId())))
                     .collect(Collectors.toList());
         }
     }
@@ -153,7 +157,6 @@ public class EventServiceImpl implements EventService {
 
         Optional.ofNullable(body.getStateAction())
                 .ifPresent(stateAction -> {
-                    log.info("START: EVENT " + event.getState() + ", STATE: " + stateAction);
                     if (event.getState().equals(StateAction.PUBLISHED) && stateAction.equals(StateAction.REJECT_EVENT))
                         throw new ConflictRequestException("Event is already published");
                     if (event.getState().equals(StateAction.PUBLISHED) && stateAction.equals(StateAction.PUBLISH_EVENT))
@@ -174,15 +177,14 @@ public class EventServiceImpl implements EventService {
 
                     if (stateAction.equals(StateAction.PUBLISH_EVENT))
                         event.setState(StateAction.PUBLISHED);
-                    log.info("END: EVENT " + event.getState() + ", STATE: " + stateAction);
                 });
-        return eventRepository.save(event);
+        return eventToEventWithComments(eventRepository.save(event), commentService.getCommentsByEventId(eventId));
     }
 
 
     @SneakyThrows
     @Override
-    public List<EventShortDto> getAllEvents(String text, List<Integer> categories, Boolean paid,
+    public List<Event> getAllEvents(String text, List<Integer> categories, Boolean paid,
                                             LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable,
                                             Integer from, Integer size, EventSort sort) {
         if (rangeEnd != null && rangeStart != null && rangeEnd.isBefore(rangeStart)) throw new ValidationException("End is Before start");
@@ -197,7 +199,7 @@ public class EventServiceImpl implements EventService {
                                         .and(availablePredicate(onlyAvailable)),
                                 PageRequest.of(from, size, Sort.unsorted())).stream()
                         .sorted(Comparator.comparing(Event::getViews))
-                        .map(EventDtoMapper::eventToShortDto)
+                        .map(event -> eventToEventWithComments(event, commentService.getCommentsByEventId(event.getId())))
                         .collect(Collectors.toList());
 
             case EVENT_DATE:
@@ -210,7 +212,7 @@ public class EventServiceImpl implements EventService {
                                         .and(availablePredicate(onlyAvailable)),
                                 PageRequest.of(from, size, Sort.unsorted())).stream()
                         .sorted(Comparator.comparing(Event::getEventDate))
-                        .map(EventDtoMapper::eventToShortDto)
+                        .map(event -> eventToEventWithComments(event, commentService.getCommentsByEventId(event.getId())))
                         .collect(Collectors.toList());
             default:
                 return specRepository.findAll(
@@ -223,7 +225,7 @@ public class EventServiceImpl implements EventService {
                                         .and(availablePredicate(onlyAvailable)),
                                 PageRequest.of(from, size, Sort.unsorted())).stream()
                         .sorted(Comparator.comparing(Event::getId))
-                        .map(EventDtoMapper::eventToShortDto)
+                        .map(event -> eventToEventWithComments(event, commentService.getCommentsByEventId(event.getId())))
                         .collect(Collectors.toList());
         }
     }
