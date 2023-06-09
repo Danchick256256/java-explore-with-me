@@ -9,9 +9,7 @@ import ru.yandex.practicum.explore.comments.dto.NewCommentDto;
 import ru.yandex.practicum.explore.comments.model.Comment;
 import ru.yandex.practicum.explore.comments.repository.CommentRepository;
 import ru.yandex.practicum.explore.event.model.Event;
-import ru.yandex.practicum.explore.event.service.EventService;
 import ru.yandex.practicum.explore.exception.BadRequestException;
-import ru.yandex.practicum.explore.exception.ConflictRequestException;
 import ru.yandex.practicum.explore.exception.NotFoundException;
 import ru.yandex.practicum.explore.user.model.User;
 import ru.yandex.practicum.explore.user.service.UserService;
@@ -29,12 +27,14 @@ import static ru.yandex.practicum.explore.comments.util.CommentMapper.dtoToComme
 public class CommentServiceImpl implements CommentService {
     private final UserService userService;
     private final CommentRepository commentRepository;
+
     @Override
     public Comment add(long eventId, CommentDto commentDto, Event event) {
         return commentRepository.save(dtoToComment(commentDto,
                 userService.getUserById(commentDto.getAuthor()),
                 event));
     }
+
     @Override
     public List<EventCommentDto> getCommentsByEventId(long eventId) {
         return commentRepository.findAllByEventId(eventId).stream()

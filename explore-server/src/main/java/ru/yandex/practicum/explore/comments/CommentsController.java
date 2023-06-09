@@ -23,8 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 public class CommentsController {
     private final CommentService commentService;
     private final EventService eventService;
+
     @PostMapping("/{id}")
-    @Validated({ OnCreate.class, OnUpdate.class })
+    @Validated({OnCreate.class, OnUpdate.class})
     @ResponseStatus(HttpStatus.CREATED)
     public Comment saveComment(@PathVariable Long id, @RequestBody @Validated CommentDto commentDto, HttpServletRequest request) {
         log.info("{className: {}, method: {POST: {}}, data: {id: {}, commentDto: {}}}",
@@ -33,7 +34,7 @@ public class CommentsController {
     }
 
     @PatchMapping
-    @Validated({ OnCreate.class, OnUpdate.class })
+    @Validated({OnCreate.class, OnUpdate.class})
     public Comment updateComment(@RequestBody @Validated NewCommentDto commentDto,
                                  @RequestParam(name = "comment") long comment,
                                  @RequestParam(name = "user") long user,

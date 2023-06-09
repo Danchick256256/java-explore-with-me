@@ -3,7 +3,6 @@ package ru.yandex.practicum.explore.event.util;
 import ru.yandex.practicum.explore.category.model.Category;
 import ru.yandex.practicum.explore.category.util.CategoryDtoMapper;
 import ru.yandex.practicum.explore.comments.dto.EventCommentDto;
-import ru.yandex.practicum.explore.comments.model.Comment;
 import ru.yandex.practicum.explore.event.dto.EventFullDto;
 import ru.yandex.practicum.explore.event.dto.EventShortDto;
 import ru.yandex.practicum.explore.event.dto.NewEventDto;

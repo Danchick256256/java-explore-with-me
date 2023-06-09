@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.yandex.practicum.explore.category.model.Category;
 import ru.yandex.practicum.explore.comments.dto.EventCommentDto;
-import ru.yandex.practicum.explore.comments.model.Comment;
 import ru.yandex.practicum.explore.user.model.User;
 import ru.yandex.practicum.explore.util.StateAction;
 
