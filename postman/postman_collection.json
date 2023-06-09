@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "727528f6-4379-4621-8c44-63bb6d157044",
 		"name": "Comments-Tests",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "17755122"
 	},
 	"item": [
@@ -441,16 +441,7 @@
 						"type": "text"
 					}
 				],
-				"url": {
-					"raw": "{{baseUrl}}/events/{{eid}}",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"events",
-						"{{eid}}"
-					]
-				}
+				"url": "{{baseUrl}}/events/{{eid}}"
 			},
 			"response": []
 		},
