@@ -75,22 +75,7 @@
 			"request": {
 				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/comments/:eventId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"comments",
-						":eventId"
-					],
-					"variable": [
-						{
-							"key": "eventId",
-							"value": "{{eid}}"
-						}
-					]
-				}
+				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
 		},
@@ -163,22 +148,7 @@
 			"request": {
 				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/comments/:eventId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"comments",
-						":eventId"
-					],
-					"variable": [
-						{
-							"key": "eventId",
-							"value": "{{eid}}"
-						}
-					]
-				}
+				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
 		},
@@ -261,22 +231,7 @@
 			"request": {
 				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/comments/:eventId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"comments",
-						":eventId"
-					],
-					"variable": [
-						{
-							"key": "eventId",
-							"value": "{{eid}}"
-						}
-					]
-				}
+				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
 		},
@@ -348,22 +303,7 @@
 			"request": {
 				"method": "POST",
 				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/comments/:eventId",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"comments",
-						":eventId"
-					],
-					"variable": [
-						{
-							"key": "eventId",
-							"value": "{{eid}}"
-						}
-					]
-				}
+				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
 		},
