@@ -3,12 +3,14 @@ package ru.yandex.practicum.explore.event.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.yandex.practicum.explore.category.model.Category;
+import ru.yandex.practicum.explore.comments.dto.EventCommentDto;
 import ru.yandex.practicum.explore.user.model.User;
 import ru.yandex.practicum.explore.util.StateAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -78,6 +80,9 @@ public class Event {
 
     @Column(name = "event_views")
     private Long views;
+
+    @Transient
+    private List<EventCommentDto> comments;
 
     public void addView() {
         views++;

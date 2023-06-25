@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.yandex.practicum.explore.category.dto.CategoryDto;
+import ru.yandex.practicum.explore.comments.model.Comment;
 import ru.yandex.practicum.explore.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -25,4 +27,5 @@ public class EventShortDto extends EventDto {
     private Boolean paid;
     private String title;
     private Long views;
+    private List<Comment> comments;
 }

@@ -27,7 +27,7 @@ public class UserController {
     private final RequestService requestService;
 
     @GetMapping("/events")
-    public List<EventShortDto> getUserEvents(@PathVariable Long userId,
+    public List<Event> getUserEvents(@PathVariable Long userId,
                                              @RequestParam(defaultValue = "0") Integer from,
                                              @RequestParam(defaultValue = "10") Integer size,
                                              HttpServletRequest request) {
