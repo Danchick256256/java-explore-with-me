@@ -75,6 +75,10 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
@@ -148,6 +152,10 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
@@ -231,6 +239,10 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
@@ -303,6 +315,10 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": "{{baseUrl}}/comments/{{eid}}"
 			},
 			"response": []
@@ -310,26 +326,6 @@
 		{
 			"name": "Получиит событие с комментариями",
 			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
-							"    pm.response.to.be.ok;    \r",
-							"    pm.response.to.be.withBody;\r",
-							"    pm.response.to.be.json;\r",
-							"});\r",
-							"\r",
-							"const target = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Комментарий должен содержать поля: id, text, author, eventId, createdOn, editedOn\", function () {\r",
-							"    pm.expect(target.comments[0]).to.have.property('description');\r",
-							"    pm.expect(target.comments[0]).to.have.property('author');\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
 				{
 					"listen": "prerequest",
 					"script": {
@@ -340,11 +336,13 @@
 							"\r",
 							"    try {\r",
 							"        const user = await api.addUser(rnd.getUser());\r",
-							"        pm.collectionVariables.set(\"uid\", user.id)\r",
+							"        pm.collectionVariables.set(\"uid\", user.id);\r",
+							"        pm.environment.set(\"uid\", user.id);\r",
 							"        const category = await api.addCategory(rnd.getCategory());\r",
 							"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
 							"        event = await api.publishEvent(event.id);\r",
-							"        pm.collectionVariables.set(\"eid\", event.id)\r",
+							"        pm.collectionVariables.set(\"eid\", event.id);\r",
+							"        pm.environment.set(\"eid\", event.id);\r",
 							"        let comment = rnd.getComment();\r",
 							"        comment.author = user.id; \r",
 							"        const comment1 = await api.addComment(event.id, rnd.getComment());\r",
@@ -367,6 +365,26 @@
 							"    },  \r",
 							"    100 \r",
 							");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
+							"    pm.response.to.be.ok;    \r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"\r",
+							"const target = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Комментарий должен содержать поля: id, text, author, eventId, createdOn, editedOn\", function () {\r",
+							"    pm.expect(target.comments[0]).to.have.property('description');\r",
+							"    pm.expect(target.comments[0]).to.have.property('author');\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -470,6 +488,10 @@
 			"request": {
 				"method": "PATCH",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": {
 					"raw": "{{baseUrl}}/comments?comment={{cid}}&user={{uid}}",
 					"host": [
@@ -562,6 +584,10 @@
 			"request": {
 				"method": "PATCH",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": {
 					"raw": "{{baseUrl}}/comments?comment={{cid}}&user={{uid}}",
 					"host": [
@@ -653,6 +679,10 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{request_body}}"
+				},
 				"url": {
 					"raw": "{{baseUrl}}/comments?comment={{cid}}&user={{uid}}",
 					"host": [
@@ -904,6 +934,11 @@
 		{
 			"key": "cid",
 			"value": ""
+		},
+		{
+			"key": "request_body",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
